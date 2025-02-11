@@ -14,3 +14,13 @@ This repository hosts the development of an **AI-powered learning agent** for th
 | **AMMAR SAJID**             | 22f2000713                         | 22f2000713@ds.study.iitm.ac.in    |  
 | **Bhavya Gupta**            | 23f1001542                         | 23f1001542@ds.study.iitm.ac.in    |  
 | **Aaryan Mayur Koulavkar**  | 23f1001125                         | 23f1001125@ds.study.iitm.ac.in    |  
+
+
+## Setup
+Paste .env file in ./backend directory. (Not to be committed in Git).
+
+## Frontend
+Go to ./vue and execute `npm run dev`
+
+## Backend
+Go to ./backend and run `python3 main.py`

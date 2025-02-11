@@ -1,0 +1,6 @@
+Flask==3.0.2
+flask-cors
+Flask-JWT-Extended
+firebase-admin
+python-dotenv
+Flask-PyMongo
