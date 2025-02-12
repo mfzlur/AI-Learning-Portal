@@ -2,7 +2,7 @@
 <template>
     <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-100">
       <div class="bg-white p-8 rounded-xl shadow-md w-96">
-        <h1 class="text-2xl font-bold text-center mb-6">Welcome to EduPortal</h1>
+        <h1 class="text-2xl font-bold text-center mb-6">Welcome to Seek v2</h1>
         <button
           @click="login"
           class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-full hover:shadow-lg transition-all duration-200 ease-in-out flex items-center justify-center"

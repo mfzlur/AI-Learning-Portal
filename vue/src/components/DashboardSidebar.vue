@@ -4,39 +4,64 @@
     isOpen ? 'translate-x-0' : '-translate-x-full h-screen',
     'fixed md:static md:translate-x-0 h-screen z-30'
   ]">
-    <div class="flex items-center mb-8">
+  <div class="flex items-center justify-between mb-8">
+    <div class="flex items-center">
     <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
         <GraduationCap class="text-white" />
     </div>
     <h1 class="text-2xl font-bold text-gray-800 ml-3">Seek v2</h1>
     </div>
-    <ul class="space-y-4">
-    <li v-for="item in navItems" :key="item.name">
-        <a
-        :href="item.href"
-        class="flex items-center p-3 text-gray-600 rounded-lg transition-all duration-200 ease-in-out"
-        :class="{ 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md': item.current, 'hover:bg-gray-100': !item.current }"
+    <button @click="$emit('toggle')" class="md:hidden text-gray-500 hover:text-gray-700">
+        <XIcon />
+    </button>
+  </div>
+  <ul class="space-y-4 flex-grow">
+      <li v-for="item in navItems" :key="item.name">
+        <router-link
+          :to="item.href"
+          class="flex items-center p-3 text-gray-600 rounded-lg transition-all duration-200 ease-in-out"
+          :class="{ 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md': item.current, 'hover:bg-gray-100': !item.current }"
         >
-        <component :is="item.icon" class="w-5 h-5 mr-3" />
-        {{ item.name }}
-        </a>
-    </li>
+          <component :is="item.icon" class="w-5 h-5 mr-3" />
+          {{ item.name }}
+        </router-link>
+      </li>
+      <li>
+        <button @click="logout" class="w-full flex items-center p-3 text-gray-600 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-100">
+          <LogOut class="w-5 h-5 mr-3" />
+          Log Out
+        </button>
+      </li>
+      
     </ul>
 </nav>
 </template>
 <script setup>
 import { ref } from 'vue'
-import { LayoutDashboard, FileText, GraduationCap, HelpCircle, BookOpen } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
+import { LayoutDashboard, FileText, GraduationCap, HelpCircle, BookOpen, MessageSquare, XIcon, LogOut } from 'lucide-vue-next'
 
-defineProps({
+const props = defineProps({
   isOpen: Boolean
 })
 
+const emit = defineEmits(['toggle'])
+
+const router = useRouter()
+const authStore = useAuthStore()
+
 const navItems = ref([
-  { name: 'Dashboard', href: '#', icon: LayoutDashboard, current: true },
-  { name: 'My Courses', href: '#', icon: BookOpen, current: false },
-  { name: 'Documents', href: '#', icon: FileText, current: false },
-  { name: 'Achievements', href: '#', icon: GraduationCap, current: false },
-  { name: 'Support', href: '#', icon: HelpCircle, current: false },
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, current: true },
+  { name: 'My Courses', href: '/courses', icon: BookOpen, current: false },
+  { name: 'Documents', href: '/documents', icon: FileText, current: false },
+  { name: 'Achievements', href: '/achievements', icon: GraduationCap, current: false },
+  { name: 'AI Assistant', href: '/ai-assistant', icon: MessageSquare, current: false },
+  { name: 'Support', href: '/support', icon: HelpCircle, current: false },
 ])
+
+const logout = () => {
+  authStore.logout()
+  router.push('/login')
+}
 </script>
