@@ -1,5 +1,5 @@
 {
-  "name": "arcanum",
+  "name": "seekv2",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "firebase": "^11.3.0",
     "lucide-vue-next": "^0.475.0",
     "pinia": "^2.1.7",

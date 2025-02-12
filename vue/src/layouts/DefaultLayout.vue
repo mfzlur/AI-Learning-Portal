@@ -2,7 +2,7 @@
 <template>
     <div class="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 flex">
       <DashboardSidebar :isOpen="isSidebarOpen" @toggle="toggleSidebar" />
-      <div class="flex-1 flex flex-col">
+      <div class="flex-1 flex flex-col overflow-y-auto h-screen">
         <div class="p-4 md:hidden">
           <button @click="toggleSidebar" class="text-gray-500 hover:text-gray-700">
             <MenuIcon v-if="!isSidebarOpen" />
