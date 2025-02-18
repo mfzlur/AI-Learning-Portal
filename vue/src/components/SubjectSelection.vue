@@ -1,9 +1,6 @@
 <template>
   <div><header class="mb-8 flex justify-between items-center mt-4 ml-4 mr-4">
     <h2 class="text-3xl font-bold text-gray-800">Select your courses.</h2>
-    <button @click="logout" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-200 ease-in-out">
-    Log Out
-    </button>
 </header>
     <div class="bg-white rounded-lg shadow p-6">
   
