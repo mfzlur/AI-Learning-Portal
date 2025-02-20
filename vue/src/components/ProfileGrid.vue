@@ -51,7 +51,7 @@
     level: 'Diploma',
     email: '24f100xxxx@ds.study.iitm.ac.in',
     dob: '15/03/2000',
-    courses: 'Machine Learning Practices, DSA, DBMS, BDM',
+    courses: 'Data Structures and Algorithms',
     phone: '+91 xxxxx xxxxx'
   })
   
