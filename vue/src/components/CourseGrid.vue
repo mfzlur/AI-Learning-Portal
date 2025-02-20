@@ -21,10 +21,8 @@
 import { ref } from 'vue'
 
 const courses = ref([
-{ name: 'BDM', progress: 75 },
-{ name: 'DBMS', progress: 60 },
-{ name: 'DSA', progress: 85 },
-{ name: 'MLP', progress: 15 },
+{ name: 'DSA', progress: 85 }
 ])
+
 
 </script>
