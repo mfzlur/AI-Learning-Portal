@@ -1,6 +1,10 @@
 <template>
   <div><header class="mb-8 flex justify-between items-center mt-4 ml-4 mr-4">
     <h2 class="text-3xl font-bold text-gray-800">Select your courses.</h2>
+    <button @click="$router.push('/dashboard')" class="mb-6 text-indigo-600 hover:text-indigo-800 flex items-center">
+        <ArrowLeftIcon class="w-5 h-5 mr-2" />
+        Back to Dashboard
+      </button>
 </header>
     <div class="bg-white rounded-lg shadow p-6">
   
@@ -42,7 +46,7 @@
   
   <script setup>
   import { ref } from 'vue'
-  
+  import { ArrowLeftIcon, PlusIcon,PencilIcon } from 'lucide-vue-next'
   const subjects = ref([
     'subject 1',
     'subject 2',
