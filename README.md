@@ -21,6 +21,7 @@ Paste .env file in ./backend directory. (Not to be committed in Git).
 
 ## Frontend
 Go to ./vue and execute `npm run dev`
+execute `npm install` first _if you are getting npm error enoent Could not read package.json:_
 
 ## Backend
 Go to ./backend and run `python3 main.py`
