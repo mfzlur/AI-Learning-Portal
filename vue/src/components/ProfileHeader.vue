@@ -15,21 +15,7 @@
             <p class="text-sm text-gray-500">Roll No: {{ student.rollNo }}</p>
           </div>
         </div>
-        <div class="flex items-center space-x-8">
-          <div class="text-center">
-            <p class="text-2xl font-bold">{{ student.notesCreated }}</p>
-            <p class="text-sm text-gray-500">Notes Created</p>
-          </div>
-          <div class="text-center">
-            <p class="text-2xl font-bold">{{ student.hoursOfEffort }}</p>
-            <p class="text-sm text-gray-500">Hours of Effort</p>
-          </div>
-          <select v-model="selectedWeek" class="rounded-md border-gray-300">
-            <option value="1">Week 1</option>
-            <option value="2">Week 2</option>
-            <option value="3">Week 3</option>
-          </select>
-        </div>
+
       </div>
     </div></div>
 </template>
