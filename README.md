@@ -20,7 +20,8 @@ This repository hosts the development of an **AI-powered learning agent** for th
 Paste .env file in ./backend directory. (Not to be committed in Git).
 
 ## Frontend
-Go to ./vue and execute `npm run dev`
+Go to ./vue and execute `npm run dev`  
+
 execute `npm install` first _if you are getting npm error enoent Could not read package.json:_
 
 ## Backend
