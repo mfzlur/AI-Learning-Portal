@@ -60,7 +60,7 @@
                   A
                 </div>
                 <div class="flex-1">
-                  <p class="text-sm text-gray-600">Hi! Feel free to ask any questions about 1.1 Introduction to Arrays.</p>
+                  <p class="text-sm text-gray-600">Hi! I'm your AI Agent. Feel free to ask any questions about 1.1 Introduction to Arrays.</p>
                 </div>
               </div>
             </div>
