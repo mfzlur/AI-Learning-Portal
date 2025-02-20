@@ -1,11 +1,10 @@
 <!-- src/components/DashboardWidgets.vue -->
 <template>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-14">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-14">
         <!-- Progress Widget -->
         <ProfileGrid />
-        <TopicsChecklist />
-        <RevisionPlan />
-        <WeeklyGoals />
+        <PersonalizedNotes />
+        <PersonalizedSuggestions />
     </div>
     </template>
     
@@ -13,9 +12,8 @@
     import { ref } from 'vue'
     import { Calendar } from 'lucide-vue-next'
     import ProfileGrid from './ProfileGrid.vue'
-    import TopicsChecklist from './TopicsChecklist.vue'
-    import RevisionPlan from './RevisionPlan.vue'
-    import WeeklyGoals from './WeeklyGoals.vue'
+    import PersonalizedSuggestions from './PersonalizedSuggestions.vue'
+    import PersonalizedNotes from './PersonalizedNotes.vue'
     const selectedWeek = ref('1')
   const student = ref({
     name: 'Rohan Paul',
