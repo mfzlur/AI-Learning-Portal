@@ -28,6 +28,6 @@
   
   const login = async () => {
     await authStore.loginWithGoogle()
-    router.push('/dashboard')
+    router.push('/select-subject')
   }
   </script>
