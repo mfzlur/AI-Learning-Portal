@@ -82,14 +82,6 @@ const router = useRouter(); // Call useRouter to get the router instance
   
   const courses = [
     {
-      name: 'MLP',
-      assignments: [
-        { week: 1, score: '100' },
-        { week: 2, score: '91' },
-        { week: 3, score: '100' },
-      ]
-    },
-    {
       name: 'DSA',
       assignments: [
         { week: 1, score: '100' },
@@ -97,22 +89,6 @@ const router = useRouter(); // Call useRouter to get the router instance
         { week: 3, score: '100' },
       ]
     },
-    {
-      name: 'DBMS',
-      assignments: [
-        { week: 1, score: '100' },
-        { week: 2, score: '100' },
-        { week: 3, score: '100' },
-      ]
-    },
-    {
-      name: 'BDM',
-      assignments: [
-        { week: 1, score: '100' },
-        { week: 2, score: '100' },
-        { week: 3, score: '95' },
-      ]
-    }
   ];
   function goToCourse(course) {
   router.push(`/course1`);
