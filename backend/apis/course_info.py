@@ -1,33 +1,82 @@
-from flask import request
-from flask_restful import Resource, reqparse
+from flask import request, jsonify
+from flask_restful import Resource
 from models import  db, Course
 
-from flask import jsonify
+
+
 
 class EnrolledCourses(Resource):
-    def get(self):
-        courses = Course.query.all()
-        courses = [
-            {
-                "id": 1,
-                "name": "DSA",
+    def get(self, course_id=None):  # Make course_id optional
+        if course_id:
+            course = Course.query.get(course_id)
+            if not course:
+                return jsonify({"error": "Course not found"}), 404
+
+            response = {
+                "id": course.id,
+                "name": course.name,
+                "progress_percentage": course.progress_percentage,
+
                 "assignments": [
-                    {"week": 1, "score": "100"},
-                    {"week": 2, "score": "100"},
-                    {"week": 3, "score": "100"},
-                ]
-            },
-            {
-                "id": 2,
-                "name": "Machine Learning Techniques",
-                "assignments": [
-                    {"week": 1, "score": "95"},
-                    {"week": 2, "score": "90"},
-                    {"week": 3, "score": "85"},
-                ]
-            }
-        ]
-        print(courses)
-        return jsonify(courses)
+                    {
+                        "id": assignment.id,
+                        "week": assignment.week,
+                        "due_date": assignment.due_date.strftime('%Y-%m-%d'),
+                        "submitted": assignment.submitted,
+                        "score": assignment.score,
+                    }
+                    for assignment in course.assignments
+                ],
+                "lectures":[
+                    {   
+                        "id": lecture.id,
+                        "week": lecture.week,
+                        "title": lecture.title,
+                        "video_url": lecture.video_url,
+                        "video_embed_code": lecture.video_embed_code,
+                        "bookmarks": [
+                            {
+                                "id": bookmark.id,
+                                "timestamp": bookmark.timestamp,
+                                "remarks": bookmark.remarks
+                            } for bookmark in lecture.bookmarks
+                        ]
+                    
+                } for lecture in course.lectures
+                ],
+                
+                "notes":[
+                    {
+                        "id": note.id,
+                        "course_id": note.course_id,
+                        "week": note.week,
+                        "title": note.title,
+                        "content": note.content
+                    } for note in course.notes  ]
+                }
+                
+            
+        else:
+            courses = Course.query.all()
+            response = [
+                {
+                    "id": course.id,
+                    "name": course.name,
+                    "assignments": [
+                        {
+                            "id": assignment.id,
+                            "week": assignment.week,
+                            "due_date": assignment.due_date.strftime('%Y-%m-%d'),
+                            "submitted": assignment.submitted,
+                            "score": assignment.score,
+                        }
+                        for assignment in course.assignments
+                    ],
+                }
+                for course in courses
+            ]
+
+        return jsonify(response)
+
 
 
