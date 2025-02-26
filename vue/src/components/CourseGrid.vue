@@ -17,12 +17,13 @@
 </div>
 </template>
 
+
+    
 <script setup>
-import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useCourseStore } from '@/stores/course'
 
-const courses = ref([
-{ name: 'DSA', progress: 85 }
-])
-
-
+const courseStore = useCourseStore()
+const { courses } = storeToRefs(courseStore)
 </script>
+    

@@ -1,8 +1,15 @@
-import os
-from dotenv import load_dotenv
+# config.py
 
-load_dotenv()  # Load environment variables from a .env file
+import os
 
 class Config:
-    MONGO_URI = os.getenv("MONGO_URI",None)
-    FIREBASE_CONFIG = os.getenv("FIREBASE_CONFIG",None)
+    # Database configuration
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///se-team7-db.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
+    # Secret key for session management
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'my-secret-key')
+    
+    # App configuration
+    DEBUG = True
+
