@@ -5,10 +5,10 @@ from models import *
 from apis.course_info import EnrolledCourses
 from flask_cors import CORS
 from flask_migrate import Migrate
-from ques_bank.mlt_GA1 import GA1
-from ques_bank.mlt_GA2 import GA2
-from ques_bank.mlt_GA3 import GA3
-from ques_bank.mlt_GA4 import GA4
+from data.mlt_GA1 import GA1
+from data.mlt_GA2 import GA2
+from data.mlt_GA3 import GA3
+from data.mlt_GA4 import GA4
 
 
 app = Flask(__name__)

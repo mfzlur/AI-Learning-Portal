@@ -1,5 +1,5 @@
 # Sample data for Lectures model
-lectures_data = [
+mlt_lectures = [
     # Week 1: 
     {
         "course_id": 1,

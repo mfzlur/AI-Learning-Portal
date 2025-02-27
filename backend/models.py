@@ -40,6 +40,7 @@ class Lectures(db.Model):
     video_url = db.Column(db.String(240), nullable=False)
     video_embed_code = db.Column(db.Text, nullable=False)
     bookmarks = db.relationship('LectureBookmarks', backref='lectures', lazy=True)
+    transcript_url = db.Column(db.String(500))
 
 
 class Notes(db.Model):
@@ -55,6 +56,34 @@ class LectureBookmarks(db.Model):
     timestamp = db.Column(db.Integer, nullable=False)
     lecture_id = db.Column(db.Integer, db.ForeignKey('lectures.id'), nullable=False)
     remarks = db.Column(db.Text, nullable=True)
+
+class Recommendations(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text)
+
+
+class PersonalisedNotes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+
+
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    conmment = db.Column(db.Text, nullable=False)
+    attachments = db.Column(db.JSON())
+
+
+class InstructorContent(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    difficult_topics = db.Column(db.JSON())
+    most_frequent_doubts = db.Column(db.JSON())
+    average_assignment_scores = db.Column(db.JSON())
+    quiz_completion_rates = db.Column(db.JSON())
+    avg_lecture_watch_time_percentage = db.Column(db.JSON())
+
+
 
 
 

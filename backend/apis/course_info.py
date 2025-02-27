@@ -5,7 +5,7 @@ from models import  db, Course
 
 
 
-class EnrolledCourses(Resource):
+class Courses(Resource):
     def get(self, course_id=None):  # Make course_id optional
         if course_id:
             course = Course.query.get(course_id)
@@ -34,6 +34,7 @@ class EnrolledCourses(Resource):
                         "title": lecture.title,
                         "video_url": lecture.video_url,
                         "video_embed_code": lecture.video_embed_code,
+                        "transcript_url" : lecture.transcript_url,
                         "bookmarks": [
                             {
                                 "id": bookmark.id,
