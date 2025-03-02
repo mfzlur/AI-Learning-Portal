@@ -3,7 +3,7 @@ from flask_restful import Api
 from config import Config
 from models import db
 from apis.course_info import EnrolledCourses
-from apis.prog_assignment_eval import ProgAssignment
+from apis.prog_assignment_eval import ProgAssignment, ProgAssignments
 from flask_cors import CORS
 from config_tests import save_tests
 
@@ -16,6 +16,7 @@ CORS(app)
 # Register API endpoints
 api.add_resource(EnrolledCourses, '/enrolled_courses')
 api.add_resource(ProgAssignment, '/programming_assignmnet/<int:prog_assignment_id>')
+api.add_resource(ProgAssignments, '/programming_assignmnets')
 
 
 with app.app_context():

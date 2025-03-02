@@ -25,6 +25,7 @@ class Assignment(db.Model):
 class ProgrammingAssignment(db.Model):
     __tablename__ = 'programming_assignment'
     id = db.Column(db.Integer, primary_key=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
     week_id = db.Column(db.Integer, db.ForeignKey('week.id'), nullable=False)
     question = db.Column(db.String(5000), nullable=False)
 

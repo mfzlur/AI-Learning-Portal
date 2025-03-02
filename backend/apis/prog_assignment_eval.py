@@ -6,7 +6,49 @@ from flask import jsonify
 import json
 
 
+class ProgAssignments(Resource):
+    def get(self):
+        prog_assignments = ProgrammingAssignment.query.all()
+        data = []
+        for prog_assignment in prog_assignments:
+            id = prog_assignment.id
+            course_id = prog_assignment.course_id
+            week_id = prog_assignment.week_id
+            question = prog_assignment.question
+            data.append({"id": id, "course_id": course_id, "week_id": week_id, "question": question})
+        return jsonify(data)
+    
+
 class ProgAssignment(Resource):
+
+    
+    def get(self, prog_assignment_id):
+        prog_assignments = ProgrammingAssignment.query.filter_by(id=prog_assignment_id).first()
+        if prog_assignments is None:
+            return {"message": "Prog Assignment not found"}, 404
+        
+        data = {
+            "id": prog_assignments.id,
+            "course_id": prog_assignments.course_id,
+            "week_id": prog_assignments.week_id,
+            "question": prog_assignments.question
+            }
+
+        test_cases = TestCases.query.filter_by(progassignment_id=prog_assignment_id).all()
+
+        test_cases_data = []
+        for test_case in test_cases:
+            test_cases_data.append({
+                "input": json.loads(test_case.input),
+                "output": json.loads(test_case.output)
+            })
+
+        data["test_cases"] = test_cases_data
+
+        return jsonify(data)
+
+
+
     # Allow users to post thier code for evaluation
     def post(self, prog_assignment_id):
         # get the code to evalaute from json
