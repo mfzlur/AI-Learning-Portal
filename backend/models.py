@@ -22,6 +22,20 @@ class Assignment(db.Model):
     
     questions = db.relationship('Question', backref='assignment', lazy=True)
 
+class ProgrammingAssignment(db.Model):
+    __tablename__ = 'programming_assignment'
+    id = db.Column(db.Integer, primary_key=True)
+    week_id = db.Column(db.Integer, db.ForeignKey('week.id'), nullable=False)
+    question = db.Column(db.String(5000), nullable=False)
+
+
+class TestCases(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    progassignment_id = db.Column(db.Integer, db.ForeignKey('programming_assignment.id'), nullable=False)
+    input = db.Column(db.String(500), nullable=False)
+    output = db.Column(db.String(500), nullable=False)
+
+
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'), nullable=False)
