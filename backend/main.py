@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from config import Config
+
 from models import *
 from apis.course_info import Courses
 from flask_cors import CORS
@@ -16,6 +17,11 @@ from apis.personalised_notes import *
 from apis.recommendations import *
 from apis.instructor import *
 from apis.instructor import *
+
+
+from apis.prog_assignment_eval import ProgAssignment, ProgAssignments
+from flask_cors import CORS
+from config_tests import save_tests
 
 
 app = Flask(__name__)
@@ -35,14 +41,15 @@ api.add_resource(FeedbackAPI, "/feedback", "/feedback/<int:feedback_id>")
 api.add_resource(RecommendationsAPI, "/recommendations", "/recommendations/<int:recommendation_id>")
 api.add_resource(PersonalisedNotesAPI, "/personalised-notes", "/personalised-notes/<int:note_id>")
 api.add_resource(InstructorContentResource, '/content', '/content/<int:content_id>')
-
-
+api.add_resource(ProgAssignment, '/programming_assignmnet/<int:prog_assignment_id>')
+api.add_resource(ProgAssignments, '/programming_assignmnets')
 
 
 
 
 # Migrate database
 migrate = Migrate(app, db)
+
 
 
 
@@ -58,11 +65,7 @@ with app.app_context():
 #             db.session.add(new_lecture)
     
 #     db.session.commit()
-
-
-
-
-    
+    save_tests()
 
 if __name__ == '__main__':
     app.run(debug=True)
