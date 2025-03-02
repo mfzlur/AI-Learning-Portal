@@ -84,6 +84,20 @@ class InstructorContent(db.Model):
     avg_lecture_watch_time_percentage = db.Column(db.JSON())
 
 
+class ProgrammingAssignment(db.Model):
+    __tablename__ = 'programming_assignment'
+    id = db.Column(db.Integer, primary_key=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
+    week_id = db.Column(db.Integer, db.ForeignKey('week.id'), nullable=False)
+    question = db.Column(db.String(5000), nullable=False)
+
+
+class TestCases(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    progassignment_id = db.Column(db.Integer, db.ForeignKey('programming_assignment.id'), nullable=False)
+    input = db.Column(db.String(500), nullable=False)
+    output = db.Column(db.String(500), nullable=False)
+
 
 
 
