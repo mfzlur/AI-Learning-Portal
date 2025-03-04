@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from flask_restful import Resource
-from models import db, Notes, Course
+from models import db, Note, Course
 
 class NotesAPI(Resource):
     def get(self, course_id):
@@ -9,7 +9,7 @@ class NotesAPI(Resource):
         if not course:
             return jsonify({"error": "Course not found"}), 404
 
-        notes = Notes.query.filter_by(course_id=course_id).all()
+        notes = Note.query.filter_by(course_id=course_id).all()
         return jsonify([
             {
                 "id": note.id,
@@ -34,7 +34,7 @@ class NotesAPI(Resource):
         if not week or not title or not content:
             return jsonify({"error": "Week, title, and content are required"}), 400
 
-        note = Notes(course_id=course_id, week=week, title=title, content=content)
+        note = Note(course_id=course_id, week=week, title=title, content=content)
         db.session.add(note)
         db.session.commit()
 
@@ -55,7 +55,7 @@ class NotesAPI(Resource):
         if not note_id:
             return jsonify({"error": "Note ID is required"}), 400
 
-        note = Notes.query.filter_by(id=note_id, course_id=course_id).first()
+        note = Note.query.filter_by(id=note_id, course_id=course_id).first()
         if not note:
             return jsonify({"error": "Note not found"}), 404
 
@@ -72,7 +72,7 @@ class NotesAPI(Resource):
 class DeleteNotesAPI(Resource):
     def delete(self, note_id):
         """Delete a note."""
-        note = Notes.query.get(note_id)
+        note = Note.query.get(note_id)
         if not note:
             return jsonify({"error": "Note not found"}), 404
 

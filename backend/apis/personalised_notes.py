@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from flask_restful import Resource
-from models import db, PersonalisedNotes
+from models import db, PersonalisedNote
 
 
 
@@ -8,7 +8,7 @@ class PersonalisedNotesAPI(Resource):
     def get(self, note_id=None):
         """Fetch all personalised notes or a specific note."""
         if note_id:
-            note = PersonalisedNotes.query.get(note_id)
+            note = PersonalisedNote.query.get(note_id)
             if not note:
                 return jsonify({"error": "Personalised note not found"}), 404
             return jsonify({
@@ -17,7 +17,7 @@ class PersonalisedNotesAPI(Resource):
                 "content": note.content
             })
 
-        notes = PersonalisedNotes.query.all()
+        notes = PersonalisedNote.query.all()
         return jsonify([
             {"id": n.id, "title": n.title, "content": n.content} for n in notes
         ])
@@ -31,7 +31,7 @@ class PersonalisedNotesAPI(Resource):
         if not title or not content:
             return jsonify({"error": "Title and content are required"}), 400
 
-        note = PersonalisedNotes(title=title, content=content)
+        note = PersonalisedNote(title=title, content=content)
         db.session.add(note)
         db.session.commit()
 
@@ -39,7 +39,7 @@ class PersonalisedNotesAPI(Resource):
 
     def put(self, note_id):
         """Update an existing personalised note."""
-        note = PersonalisedNotes.query.get(note_id)
+        note = PersonalisedNote.query.get(note_id)
         if not note:
             return jsonify({"error": "Personalised note not found"}), 404
 
@@ -57,7 +57,7 @@ class PersonalisedNotesAPI(Resource):
 
     def delete(self, note_id):
         """Delete a personalised note."""
-        note = PersonalisedNotes.query.get(note_id)
+        note = PersonalisedNote.query.get(note_id)
         if not note:
             return jsonify({"error": "Personalised note not found"}), 404
 

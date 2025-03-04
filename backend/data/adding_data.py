@@ -2,13 +2,13 @@ from flask import Flask
 from flask_restful import Api
 from config import Config
 from models import *
-from apis.course_info import EnrolledCourses
 from flask_cors import CORS
 from flask_migrate import Migrate
 from data.mlt_GA1 import GA1
 from data.mlt_GA2 import GA2
 from data.mlt_GA3 import GA3
 from data.mlt_GA4 import GA4
+from data.config_tests import *
 
 
 app = Flask(__name__)
@@ -17,8 +17,7 @@ api = Api(app)
 db.init_app(app)
 CORS(app)
 
-# Register API endpoints
-api.add_resource(EnrolledCourses, '/enrolled_courses')
+
 
 # Migrate database
 migrate = Migrate(app, db)
@@ -87,6 +86,47 @@ with app.app_context():
 
     db.session.commit()
 
+from data.dsa_lectures import dsa_lectures
+from data.mlt_lectures import mlt_lectures
+
+with app.app_context():
+    for lecture in dsa_lectures:
+        existing_lecture = Lecture.query.filter_by(title=lecture["title"]).first()
+        if not existing_lecture:
+            new_lecture = Lecture(**lecture)
+            db.session.add(new_lecture)
+    
+    db.session.commit()
+    save_tests()
+
+
+with app.app_context():
+    # Create the table if it does not exist
+    db.create_all()
+
+    # Adding three records
+    prog_assignments = [
+        ProgrammingAssignment(course_id=1, week=1, question="Define a function solution(a,b,c). It should take as input three integers and return back the sum of the 3 integers."),
+        ProgrammingAssignment(course_id=1, week=2, question="Define a function solution(a) that takes as input an integer a and return the square of the integer."),
+        ProgrammingAssignment(course_id=1, week=3, question="Define a function solution which takes as input 3 variables x,y,z and returns the sum of the number of letters if the variable is a string otherwise add the integer value.")
+    ]
+
+    for assignment in prog_assignments:
+        existing_assignment = ProgrammingAssignment.query.filter_by(
+            course_id=assignment.course_id,
+            week=assignment.week,
+            question=assignment.question
+        ).first()
+
+        if not existing_assignment:
+            db.session.add(assignment)  # Directly add the assignment object
+
+    db.session.commit()
+    print("Data inserted successfully!")
+
 
 if __name__ == '__main__':
+    # save_input()
+    
     app.run(debug=True)
+

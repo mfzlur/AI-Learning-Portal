@@ -8,8 +8,8 @@ class Course(db.Model):
     name = db.Column(db.String(120), nullable=False)
     assignments = db.relationship('Assignment', backref='course', lazy=True)
     progress_percentage = db.Column(db.Integer, default=0)
-    lectures = db.relationship('Lectures', backref='course', lazy=True)
-    notes = db.relationship('Notes', backref='course', lazy=True)
+    lectures = db.relationship('Lecture', backref='course', lazy=True)
+    notes = db.relationship('Note', backref='course', lazy=True)
 
 
 class Assignment(db.Model):
@@ -26,7 +26,7 @@ class ProgrammingAssignment(db.Model):
     __tablename__ = 'programming_assignment'
     id = db.Column(db.Integer, primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
-    week_id = db.Column(db.Integer, db.ForeignKey('week.id'), nullable=False)
+    week = db.Column(db.Integer, nullable=False)
     question = db.Column(db.String(5000), nullable=False)
 
 
@@ -47,18 +47,18 @@ class Question(db.Model):
     user_answer = db.Column(db.Integer, default=-1)
 
 
-class Lectures(db.Model):
+class Lecture(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
     week = db.Column(db.Integer, nullable=False)
     title = db.Column(db.String(200), nullable=False)
     video_url = db.Column(db.String(240), nullable=False)
     video_embed_code = db.Column(db.Text, nullable=False)
-    bookmarks = db.relationship('LectureBookmarks', backref='lectures', lazy=True)
+    bookmarks = db.relationship('LectureBookmark', backref='lecture', lazy=True)
     transcript_url = db.Column(db.String(500))
 
 
-class Notes(db.Model):
+class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
     week = db.Column(db.Integer, nullable=False)
@@ -66,18 +66,18 @@ class Notes(db.Model):
     content = db.Column(db.Text, nullable=False)
 
 
-class LectureBookmarks(db.Model):
+class LectureBookmark(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.Integer, nullable=False)
-    lecture_id = db.Column(db.Integer, db.ForeignKey('lectures.id'), nullable=False)
+    lecture_id = db.Column(db.Integer, db.ForeignKey('lecture.id'), nullable=False)
     remarks = db.Column(db.Text, nullable=True)
 
-class Recommendations(db.Model):
+class Recommendation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text)
 
 
-class PersonalisedNotes(db.Model):
+class PersonalisedNote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
@@ -99,19 +99,7 @@ class InstructorContent(db.Model):
     avg_lecture_watch_time_percentage = db.Column(db.JSON())
 
 
-class ProgrammingAssignment(db.Model):
-    __tablename__ = 'programming_assignment'
-    id = db.Column(db.Integer, primary_key=True)
-    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
-    week_id = db.Column(db.Integer, db.ForeignKey('week.id'), nullable=False)
-    question = db.Column(db.String(5000), nullable=False)
 
-
-class TestCases(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    progassignment_id = db.Column(db.Integer, db.ForeignKey('programming_assignment.id'), nullable=False)
-    input = db.Column(db.String(500), nullable=False)
-    output = db.Column(db.String(500), nullable=False)
 
 
 

@@ -1,4 +1,4 @@
-from models import db, Course, ProgrammingAssignment, TestCases
+from models import db,TestCases
 import json
 
 def save_tests():
@@ -30,12 +30,12 @@ def output_tests():
     tests = TestCases.query.all()
     for test in tests:
         input = json.loads(test.input)
-        print(input)
+        # print(input)
         
         try:
             output = json.loads(test.output)
         except:
             output = test.output
 
-        print(output)
+        # print(output)
         print(f"code_output = solution({', '.join(repr(arg) for arg in input)})")

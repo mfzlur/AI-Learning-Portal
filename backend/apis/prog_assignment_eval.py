@@ -1,6 +1,6 @@
 from flask import request
 from flask_restful import Resource, reqparse
-from models import  db, Course, ProgrammingAssignment, TestCases
+from models import ProgrammingAssignment, TestCases
 import csv
 from flask import jsonify
 import json
@@ -13,9 +13,9 @@ class ProgAssignments(Resource):
         for prog_assignment in prog_assignments:
             id = prog_assignment.id
             course_id = prog_assignment.course_id
-            week_id = prog_assignment.week_id
+            week = prog_assignment.week
             question = prog_assignment.question
-            data.append({"id": id, "course_id": course_id, "week_id": week_id, "question": question})
+            data.append({"id": id, "course_id": course_id, "week_id": week, "question": question})
         return jsonify(data)
     
 
@@ -30,7 +30,7 @@ class ProgAssignment(Resource):
         data = {
             "id": prog_assignments.id,
             "course_id": prog_assignments.course_id,
-            "week_id": prog_assignments.week_id,
+            "week": prog_assignments.week,
             "question": prog_assignments.question
             }
 
@@ -66,7 +66,7 @@ class ProgAssignment(Resource):
         
 
         # Retrieve test cases
-        print(prog_assignment_id)
+        # print(prog_assignment_id)
         test_cases = TestCases.query.filter_by(progassignment_id=prog_assignment_id).all()
 
         # test_cases = [[[1,2,3], [6]], [[5,5,4], [14]]]
@@ -77,7 +77,7 @@ class ProgAssignment(Resource):
         # Evaluate the code
         results = []
         for test_case in test_cases:
-            print(test_case)
+            # print(test_case)
             input = json.loads(test_case.input)
             output = test_case.output
             try:
@@ -91,7 +91,7 @@ class ProgAssignment(Resource):
             func_call = f"code_output = solution({', '.join(repr(arg) for arg in input)})"
 
             code_to_exec = code + '\n' + func_call
-            print(code_to_exec)
+            # print(code_to_exec)
 
             try:
                 local_scope = {}
@@ -107,8 +107,6 @@ class ProgAssignment(Resource):
             except Exception as e:
                 print(e)
                 results.append(str(e))
-
-        
 
         return jsonify(results)
     

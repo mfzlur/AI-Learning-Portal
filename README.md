@@ -24,5 +24,84 @@ Go to ./vue and execute `npm run dev`
 
 execute `npm install` first _if you are getting npm error enoent Could not read package.json:_
 
-## Backend
-Go to ./backend and run `python3 main.py`
+
+# Backend Setup Guide
+
+## Prerequisites
+Ensure you have the following installed on your system:
+- Python (>=3.7)
+- pip (Python package manager)
+
+## Setting Up the Virtual Environment
+It is recommended to use a virtual environment to manage dependencies. Follow these steps:
+
+### **1. Create a Virtual Environment**
+Run the following command in your project directory:
+
+```bash
+python -m venv venv
+```
+
+### **2. Activate the Virtual Environment**
+- **Windows**:
+  ```bash
+  venv\Scripts\activate
+  ```
+- **Mac/Linux**:
+  ```bash
+  source venv/bin/activate
+  ```
+
+### **3. Install Dependencies**
+Once the virtual environment is activated, install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Running the Application
+After setting up the environment and installing dependencies, run the application:
+
+```bash
+python main.py
+```
+
+## Deactivating the Virtual Environment
+After you are done, you can deactivate the virtual environment by running:
+
+```bash
+deactivate
+```
+
+---
+
+# Running AI assisstant on your local machine
+
+## Clone the Repository
+First, clone the repository to your local machine:
+```sh
+git clone https://github.com/aaryan-mk/LLMs_TEST/tree/master
+cd LLM_TEST
+```
+
+## activate python virtual environment
+
+## Install Dependencies
+Install the required packages using:
+```sh
+pip install -r reqx.txt
+```
+
+## Run the Application
+Start the application with:
+```sh
+python app.py
+```
+
+## Validate apis on swagger
+
+- copy the contents of backend/team7-t125-mile4.yaml
+- paste it on swagger editor
+- test your apis
+
+make sure your server is running locally on port:5000

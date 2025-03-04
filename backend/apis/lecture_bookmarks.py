@@ -1,15 +1,15 @@
 from flask import request, jsonify
 from flask_restful import Resource
-from models import db, LectureBookmarks, Lectures
+from models import db, LectureBookmark, Lecture
 
 class LectureBookmarksAPI(Resource):
     def get(self, lecture_id):
         """Fetch all bookmarks for a given lecture."""
-        lecture = Lectures.query.get(lecture_id)
+        lecture = Lecture.query.get(lecture_id)
         if not lecture:
             return jsonify({"error": "Lecture not found"}), 404
 
-        bookmarks = LectureBookmarks.query.filter_by(lecture_id=lecture_id).all()
+        bookmarks = LectureBookmark.query.filter_by(lecture_id=lecture_id).all()
         return jsonify([
             {
                 "id": bookmark.id,
@@ -21,7 +21,7 @@ class LectureBookmarksAPI(Resource):
 
     def post(self, lecture_id):
         """Add a new bookmark to a lecture."""
-        lecture = Lectures.query.get(lecture_id)
+        lecture = Lecture.query.get(lecture_id)
         if not lecture:
             return jsonify({"error": "Lecture not found"}), 404
 
@@ -32,7 +32,7 @@ class LectureBookmarksAPI(Resource):
         if timestamp is None:
             return jsonify({"error": "Timestamp is required"}), 400
 
-        bookmark = LectureBookmarks(lecture_id=lecture_id, timestamp=timestamp, remarks=remarks)
+        bookmark = LectureBookmark(lecture_id=lecture_id, timestamp=timestamp, remarks=remarks)
         db.session.add(bookmark)
         db.session.commit()
 
@@ -40,7 +40,7 @@ class LectureBookmarksAPI(Resource):
 
     def put(self, lecture_id):
         """Update an existing bookmark for a lecture."""
-        lecture = Lectures.query.get(lecture_id)
+        lecture = Lecture.query.get(lecture_id)
         if not lecture:
             return jsonify({"error": "Lecture not found"}), 404
 
@@ -52,7 +52,7 @@ class LectureBookmarksAPI(Resource):
         if not bookmark_id:
             return jsonify({"error": "Bookmark ID is required"}), 400
 
-        bookmark = LectureBookmarks.query.filter_by(id=bookmark_id, lecture_id=lecture_id).first()
+        bookmark = LectureBookmark.query.filter_by(id=bookmark_id, lecture_id=lecture_id).first()
         if not bookmark:
             return jsonify({"error": "Bookmark not found"}), 404
 
@@ -67,7 +67,7 @@ class LectureBookmarksAPI(Resource):
 class DeleteLectureBookmarkAPI(Resource):
     def delete(self, bookmark_id):
         """Delete a bookmark."""
-        bookmark = LectureBookmarks.query.get(bookmark_id)
+        bookmark = LectureBookmark.query.get(bookmark_id)
         if not bookmark:
             return jsonify({"error": "Bookmark not found"}), 404
 

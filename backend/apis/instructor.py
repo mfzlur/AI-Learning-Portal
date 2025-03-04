@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
+from models import db, InstructorContent
 
 class InstructorContentResource(Resource):
     def get(self, content_id=None):
