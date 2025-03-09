@@ -3,14 +3,13 @@ from flask_restful import Resource
 from models import db, PersonalisedNote
 
 
-
 class PersonalisedNotesAPI(Resource):
     def get(self, note_id=None):
         """Fetch all personalised notes or a specific note."""
         if note_id:
-            note = PersonalisedNote.query.get(note_id)
+            note = db.session.get(PersonalisedNote, note_id)
             if not note:
-                return jsonify({"error": "Personalised note not found"}), 404
+                return {"error": "Personalised note not found"}, 404
             return jsonify({
                 "id": note.id,
                 "title": note.title,
@@ -25,25 +24,31 @@ class PersonalisedNotesAPI(Resource):
     def post(self):
         """Create a new personalised note."""
         data = request.get_json()
+        if not data:
+            return {"error": "No data provided"}, 400
+            
         title = data.get("title")
         content = data.get("content")
 
         if not title or not content:
-            return jsonify({"error": "Title and content are required"}), 400
+            return {"error": "Title and content are required"}, 400
 
         note = PersonalisedNote(title=title, content=content)
         db.session.add(note)
         db.session.commit()
 
-        return jsonify({"message": "Personalised note added successfully", "id": note.id})
+        return {"message": "Personalised note added successfully", "id": note.id}
 
     def put(self, note_id):
         """Update an existing personalised note."""
-        note = PersonalisedNote.query.get(note_id)
+        note = db.session.get(PersonalisedNote, note_id)
         if not note:
-            return jsonify({"error": "Personalised note not found"}), 404
+            return {"error": "Personalised note not found"}, 404
 
         data = request.get_json()
+        if not data:
+            return {"error": "No data provided"}, 400
+            
         title = data.get("title")
         content = data.get("content")
 
@@ -53,14 +58,14 @@ class PersonalisedNotesAPI(Resource):
             note.content = content
 
         db.session.commit()
-        return jsonify({"message": "Personalised note updated successfully"})
+        return {"message": "Personalised note updated successfully"}
 
     def delete(self, note_id):
         """Delete a personalised note."""
-        note = PersonalisedNote.query.get(note_id)
+        note = db.session.get(PersonalisedNote, note_id)
         if not note:
-            return jsonify({"error": "Personalised note not found"}), 404
+            return {"error": "Personalised note not found"}, 404
 
         db.session.delete(note)
         db.session.commit()
-        return jsonify({"message": "Personalised note deleted successfully"})
+        return {"message": "Personalised note deleted successfully"}

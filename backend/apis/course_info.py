@@ -1,22 +1,20 @@
 from flask import request, jsonify
 from flask_restful import Resource
-from models import  db, Course
-
-
+from models import db, Course
 
 
 class Courses(Resource):
     def get(self, course_id=None):  # Make course_id optional
         if course_id:
-            course = Course.query.get(course_id)
+            # Replace Course.query.get() with db.session.get()
+            course = db.session.get(Course, course_id)
             if not course:
-                return jsonify({"error": "Course not found"}), 404
+                return {"error": "Course not found"}, 404
 
             response = {
                 "id": course.id,
                 "name": course.name,
                 "progress_percentage": course.progress_percentage,
-
                 "assignments": [
                     {
                         "id": assignment.id,
@@ -27,14 +25,14 @@ class Courses(Resource):
                     }
                     for assignment in course.assignments
                 ],
-                "lectures":[
+                "lectures": [
                     {   
                         "id": lecture.id,
                         "week": lecture.week,
                         "title": lecture.title,
                         "video_url": lecture.video_url,
                         "video_embed_code": lecture.video_embed_code,
-                        "transcript_url" : lecture.transcript_url,
+                        "transcript_url": lecture.transcript_url,
                         "bookmarks": [
                             {
                                 "id": bookmark.id,
@@ -42,21 +40,20 @@ class Courses(Resource):
                                 "remarks": bookmark.remarks
                             } for bookmark in lecture.bookmarks
                         ]
-                    
-                } for lecture in course.lectures
+                    } for lecture in course.lectures
                 ],
-                
-                "notes":[
+                "notes": [
                     {
                         "id": note.id,
                         "course_id": note.course_id,
                         "week": note.week,
                         "title": note.title,
                         "content": note.content
-                    } for note in course.notes  ]
-                }
-                
+                    } for note in course.notes
+                ]
+            }
             
+            return jsonify(response)
         else:
             courses = Course.query.all()
             response = [
@@ -77,10 +74,4 @@ class Courses(Resource):
                 for course in courses
             ]
 
-        return jsonify(response)
-
-    
-
-
-
-
+            return jsonify(response)

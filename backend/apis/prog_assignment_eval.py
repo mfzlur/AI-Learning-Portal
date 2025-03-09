@@ -1,6 +1,6 @@
 from flask import request
 from flask_restful import Resource, reqparse
-from models import ProgrammingAssignment, TestCases
+from models import db, ProgrammingAssignment, TestCases
 import csv
 from flask import jsonify
 import json
@@ -20,7 +20,6 @@ class ProgAssignments(Resource):
     
 
 class ProgAssignment(Resource):
-
     
     def get(self, prog_assignment_id):
         prog_assignments = ProgrammingAssignment.query.filter_by(id=prog_assignment_id).first()
@@ -35,6 +34,9 @@ class ProgAssignment(Resource):
             }
 
         test_cases = TestCases.query.filter_by(progassignment_id=prog_assignment_id).all()
+        if not test_cases:
+            data["test_cases"] = []
+            return jsonify(data)
 
         test_cases_data = []
         for test_case in test_cases:
@@ -47,10 +49,13 @@ class ProgAssignment(Resource):
 
         return jsonify(data)
 
-
-
     # Allow users to post thier code for evaluation
     def post(self, prog_assignment_id):
+        # Check if assignment exists
+        prog_assignment = ProgrammingAssignment.query.filter_by(id=prog_assignment_id).first()
+        if not prog_assignment:
+            return {"message": "Programming assignment not found"}, 404
+            
         # get the code to evalaute from json
         data = request.get_json()
 
@@ -64,25 +69,20 @@ class ProgAssignment(Resource):
         if code is None:
             return {"message": "No code provided"}, 400
         
-
         # Retrieve test cases
-        # print(prog_assignment_id)
         test_cases = TestCases.query.filter_by(progassignment_id=prog_assignment_id).all()
 
-        # test_cases = [[[1,2,3], [6]], [[5,5,4], [14]]]
-        if test_cases is None:
+        if not test_cases:
             return {"message": "No test cases found"}, 400
         
-
         # Evaluate the code
         results = []
         for test_case in test_cases:
-            # print(test_case)
             input = json.loads(test_case.input)
             output = test_case.output
             try:
                 # First, try to parse JSON (for numbers, lists, and booleans)
-                output =  json.loads(output)
+                output = json.loads(output)
             except (json.JSONDecodeError, TypeError):
                 # If it's not JSON, return as a string
                 output = output
@@ -91,7 +91,6 @@ class ProgAssignment(Resource):
             func_call = f"code_output = solution({', '.join(repr(arg) for arg in input)})"
 
             code_to_exec = code + '\n' + func_call
-            # print(code_to_exec)
 
             try:
                 local_scope = {}
@@ -109,4 +108,3 @@ class ProgAssignment(Resource):
                 results.append(str(e))
 
         return jsonify(results)
-    
