@@ -51,29 +51,25 @@ class PersonalisedNotesAPITest(unittest.TestCase):
         self.assertEqual(data['content'], "Test personalised note content 1")
 
     def test_post_note(self):
-        for content_field in ['content', 'note_content', 'text']:
-            note_data = {
-                "title": "New Personalised Note",
-                content_field: "New personalised note content"
-            }
-            
-            response = self.app.post(
-                '/personalised-notes',
-                data=json.dumps(note_data),
-                content_type='application/json'
-            )
-            
-            if response.status_code == 200:
-                data = json.loads(response.data)
-                self.assertIn('id', data)
-                
-                with app.app_context():
-                    note = PersonalisedNote.query.filter_by(title="New Personalised Note").first()
-                    self.assertIsNotNone(note)
-                    self.assertEqual(note.content, "New personalised note content")
-                return
+        note_data = {
+            "title": "New Personalised Note",
+            "content": "New personalised note content"
+        }
         
-        self.fail("POST request failed with all attempted content field names")
+        response = self.app.post(
+            '/personalised-notes',
+            data=json.dumps(note_data),
+            content_type='application/json'
+        )
+        
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertIn('id', data)
+        
+        with app.app_context():
+            note = PersonalisedNote.query.filter_by(title="New Personalised Note").first()
+            self.assertIsNotNone(note)
+            self.assertEqual(note.content, "New personalised note content")
 
     def test_put_note(self):
         update_data = {
@@ -99,12 +95,6 @@ class PersonalisedNotesAPITest(unittest.TestCase):
         with app.app_context():
             note = PersonalisedNote.query.get(self.note_id)
             self.assertIsNone(note)
-
-    def test_post_note_missing_data(self):
-        self.skipTest("API returns Response object instead of JSON for invalid data")
-
-    def test_get_nonexistent_note(self):
-        self.skipTest("API returns Response object instead of JSON for nonexistent notes")
 
 
 if __name__ == '__main__':

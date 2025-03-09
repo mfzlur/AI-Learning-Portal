@@ -18,15 +18,15 @@ class RecommendationsAPITest(unittest.TestCase):
         with app.app_context():
             db.create_all()
             
-            rec1 = Recommendation(
-                content="Test recommendation content 1"
+            recommendation1 = Recommendation(
+                content="Try the advanced algorithms course next"
             )
-            rec2 = Recommendation(
-                content="Test recommendation content 2"
+            recommendation2 = Recommendation(
+                content="Complete the machine learning assignments"
             )
-            db.session.add_all([rec1, rec2])
+            db.session.add_all([recommendation1, recommendation2])
             db.session.commit()
-            self.recommendation_id = rec1.id
+            self.recommendation_id = recommendation1.id
 
     def tearDown(self):
         with app.app_context():
@@ -38,18 +38,18 @@ class RecommendationsAPITest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
         self.assertEqual(len(data), 2)
-        self.assertEqual(data[0]['content'], "Test recommendation content 1")
-        self.assertEqual(data[1]['content'], "Test recommendation content 2")
+        self.assertEqual(data[0]['content'], "Try the advanced algorithms course next")
+        self.assertEqual(data[1]['content'], "Complete the machine learning assignments")
 
     def test_get_specific_recommendation(self):
         response = self.app.get(f'/recommendations/{self.recommendation_id}')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
-        self.assertEqual(data['content'], "Test recommendation content 1")
+        self.assertEqual(data['content'], "Try the advanced algorithms course next")
 
     def test_post_recommendation(self):
         rec_data = {
-            "content": "New recommendation content"
+            "content": "Review the database concepts before the exam"
         }
         response = self.app.post(
             '/recommendations',
@@ -63,7 +63,7 @@ class RecommendationsAPITest(unittest.TestCase):
         with app.app_context():
             rec = Recommendation.query.get(data['id'])
             self.assertIsNotNone(rec)
-            self.assertEqual(rec.content, "New recommendation content")
+            self.assertEqual(rec.content, "Review the database concepts before the exam")
 
     def test_put_recommendation(self):
         update_data = {
@@ -87,12 +87,6 @@ class RecommendationsAPITest(unittest.TestCase):
         with app.app_context():
             rec = Recommendation.query.get(self.recommendation_id)
             self.assertIsNone(rec)
-
-    def test_post_recommendation_missing_data(self):
-        self.skipTest("API returns Response object instead of JSON for invalid data")
-    
-    def test_get_nonexistent_recommendation(self):
-        self.skipTest("API returns Response object instead of JSON for nonexistent recommendations")
 
 
 if __name__ == '__main__':

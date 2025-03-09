@@ -62,7 +62,7 @@ def test_get_notes(client, test_course, test_notes):
     assert data[1]['title'] == "Test Note 2"
 
 
-def test_post_note(client, test_course, api_checker):
+def test_post_note(client, test_course):
     note_data = {
         "title": "New Test Note",
         "content": "New test note content",
@@ -75,8 +75,9 @@ def test_post_note(client, test_course, api_checker):
         content_type='application/json'
     )
     
-    data = api_checker(response, expected_status=[200, 201], 
-                      expected_data={"id": None})
+    assert response.status_code in [200, 201]
+    data = json.loads(response.data)
+    assert 'id' in data
     
     with app.app_context():
         note = Note.query.get(data['id'])
@@ -89,42 +90,31 @@ def test_post_note(client, test_course, api_checker):
 def test_put_note(client, test_course, test_notes):
     note_id = test_notes[0]
     
+    update_data = {
+        "id": note_id,
+        "title": "Updated Note Title",
+        "content": "Updated note content"
+    }
+    
+    response = client.put(
+        f'/notes/{test_course}',
+        data=json.dumps(update_data),
+        content_type='application/json'
+    )
+    
+    assert response.status_code == 200
+    
     with app.app_context():
-        note = Note.query.get(note_id)
-        if note:
-            note.title = "Updated Note Title"
-            note.content = "Updated note content"
-            db.session.commit()
-            
         note = Note.query.get(note_id)
         assert note.title == "Updated Note Title"
         assert note.content == "Updated note content"
 
 
-def test_delete_note(client):
-    with app.app_context():
-        course = Course(name="Test Course")
-        db.session.add(course)
-        db.session.commit()
-        
-        note = Note(
-            course_id=course.id,
-            content="Test note content",
-            title="Test Note",
-            week=1
-        )
-        db.session.add(note)
-        db.session.commit()
-        note_id = note.id
-
-    response = client.delete(f'/notes/delete/{note_id}')
+def test_delete_note(client, test_notes):
+    note_id = test_notes[0]
     
-    if response.status_code == 200:
-        try:
-            data = json.loads(response.data)
-            assert 'message' in data
-        except json.JSONDecodeError:
-            pass
+    response = client.delete(f'/notes/delete/{note_id}')
+    assert response.status_code == 200
     
     with app.app_context():
         note = Note.query.get(note_id)
