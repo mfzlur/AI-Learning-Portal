@@ -2,14 +2,15 @@
 **Description:** These APIs have functionality related to course information retrieval including course details and lectures.
 
 ### Endpoint: 
-- **URL:** ```/courses```
+- **URL:** ```http://127.0.0.1:5000/courses```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_all_courses()```
 Tests retrieving all courses from the database
     - Passed Inputs:
-        - None - GET request to /courses
+        - GET request to http://127.0.0.1:5000/courses
+        - No parameters or body data sent
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - List of all courses
@@ -40,14 +41,15 @@ Tests retrieving all courses from the database
         ```
 
 ### Endpoint: 
-- **URL:** ```/course/{course_id}```
+- **URL:** ```http://127.0.0.1:5000/course/{course_id}```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_specific_course()```
 Tests retrieving a specific course by ID
     - Passed Inputs:
-        - Valid course ID
+        - GET request to http://127.0.0.1:5000/course/1 
+        - Where self.course_id = 1 (based on the response data showing "Python Programming")
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - Course details including lectures
@@ -89,7 +91,8 @@ Tests retrieving a specific course by ID
 2. ```test_get_nonexistent_course()```
 Tests retrieving a non-existent course
     - Passed Inputs:
-        - Invalid course ID (9999)
+        - GET request to http://127.0.0.1:5000/course/9999
+        - Using nonexistent_id = 9999 (explicitly set in the test code)
     - Expected Output:
         - ```HTTP-Status Code: 404```
     - Actual Output:
@@ -113,14 +116,15 @@ Tests retrieving a non-existent course
 **Description:** These APIs manage feedback functionality, allowing users to create, retrieve, and delete feedback.
 
 ### Endpoint: 
-- **URL:** ```/feedback```
+- **URL:** ```http://127.0.0.1:5000/feedback```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_all_feedback()```
 Tests retrieving all feedback entries
     - Passed Inputs:
-        - None - GET request to /feedback
+        - GET request to http://127.0.0.1:5000/feedback
+        - No parameters or body data sent
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - List of feedback entries
@@ -156,14 +160,15 @@ Tests retrieving all feedback entries
         ```
 
 ### Endpoint: 
-- **URL:** ```/feedback/{feedback_id}```
+- **URL:** ```http://127.0.0.0.1:5000/feedback/{feedback_id}```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_specific_feedback()```
 Tests retrieving a specific feedback entry
     - Passed Inputs:
-        - Valid feedback_id
+        - GET request to http://127.0.0.1:5000/feedback/1
+        - Path parameter: feedback_id=1 (from self.feedback_id in setup)
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - Details of the requested feedback
@@ -196,13 +201,16 @@ Tests retrieving a specific feedback entry
         ```
 
 ### Endpoint: 
-- **URL:** ```/feedback```
+- **URL:** ```http://127.0.0.1:5000/feedback```
 - **Method:** POST
 
 ##### Test Cases:
 1. ```test_post_feedback()```
 Tests creating a new feedback entry
     - Passed Inputs:
+        - POST request to http://127.0.0.1:5000/feedback
+        - Content-Type: application/json
+        - Request Body:
         ```json
         {
             "title": "New Feedback",
@@ -247,14 +255,15 @@ Tests creating a new feedback entry
         ```
 
 ### Endpoint: 
-- **URL:** ```/feedback/{feedback_id}```
+- **URL:** ```http://127.0.0.1:5000/feedback/{feedback_id}```
 - **Method:** DELETE
 
 ##### Test Cases:
 1. ```test_delete_feedback()```
 Tests deleting feedback
     - Passed Inputs:
-        - Valid feedback_id
+        - DELETE request to http://127.0.0.1:5000/feedback/1
+        - Path parameter: feedback_id=1 (from self.feedback_id in setup)
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - Feedback no longer exists in database
@@ -282,20 +291,58 @@ Tests deleting feedback
 **Description:** These APIs handle graded assignments functionality, including retrieving assignments and submitting answers.
 
 ### Endpoint: 
-- **URL:** ```/ga/{course_id}```
+- **URL:** ```http://127.0.0.1:5000/ga/{course_id}```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_all_assignments()```
 Tests retrieving all graded assignments for a course
     - Passed Inputs:
-        - Valid course_id
+        - GET request to http://127.0.0.1:5000/ga/1
+        - Path parameter: course_id=1 (defined in self.course_id)
+        - No query parameters or request body
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - List of assignments for the course
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Assignments list with week values 1 and 2
+        - ```json
+          [
+            {
+              "id": 1,
+              "title": "Week 1 Assignment",
+              "week": 1,
+              "questions": [
+                {
+                  "id": 1,
+                  "text": "What is a variable in Python?",
+                  "options": ["A container for data", "A loop construct", "A function", "A module"]
+                },
+                {
+                  "id": 2,
+                  "text": "Which of these is a valid Python identifier?",
+                  "options": ["my_var", "2var", "for", "class!"]
+                }
+              ],
+              "deadline": "2023-12-10T23:59:59",
+              "submitted": false
+            },
+            {
+              "id": 2,
+              "title": "Week 2 Assignment",
+              "week": 2,
+              "questions": [
+                {
+                  "id": 3,
+                  "text": "What is a list comprehension?",
+                  "options": ["A concise way to create lists", "A way to iterate lists", "A function", "None of these"]
+                }
+              ],
+              "deadline": "2023-12-17T23:59:59",
+              "submitted": false
+            }
+          ]
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -310,29 +357,42 @@ Tests retrieving all graded assignments for a course
         ```
 
 ### Endpoint: 
-- **URL:** ```/ga/{course_id}/{assignment_id}```
+- **URL:** ```http://127.0.0.1:5000/ga/{course_id}/{assignment_id}```
 - **Method:** POST
 
 ##### Test Cases:
 1. ```test_post_assignment_submission()```
 Tests submitting answers for a graded assignment
     - Passed Inputs:
+        - POST request to http://127.0.0.1:5000/ga/1/1
+        - Path parameters: 
+          - course_id=1 (defined in self.course_id)
+          - assignment_id=1 (defined in self.assignment_id)
+        - Content-Type: application/json
+        - Request Body:
         ```json
         {
             "answers": {
-                "question1_id": 1,
-                "question2_id": 1
+                "1": 1,  
+                "2": 1   
             }
         }
         ```
+        (where "1" and "2" are question IDs from self.question1_id and self.question2_id, and the values represent the selected answer options)
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - Response containing score
         - Assignment marked as submitted with correct score
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Response with score
-        - Assignment updated with submitted=True and score=50.0
+        - ```json
+          {
+            "score": 50.0,
+            "message": "Assignment submitted successfully",
+            "correct_answers": 1,
+            "total_questions": 2
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -365,20 +425,46 @@ Tests submitting answers for a graded assignment
 **Description:** These APIs provide functionality for instructors to access aggregated content and analytics about student performance, difficult topics, and learning patterns.
 
 ### Endpoint: 
-- **URL:** ```/content```
+- **URL:** ```http://127.0.0.1:5000/content```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_all_content()```
 Tests retrieving all instructor content
     - Passed Inputs:
-        - None - GET request to /content
+        - GET request to http://127.0.0.1:5000/content
+        - No parameters or body data sent
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - List of instructor content entries
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Content list containing information about difficult topics and student metrics
+        - ```json
+          [
+            {
+              "id": 1,
+              "course_id": 1,
+              "difficult_topics": "Recursion, Dynamic Programming",
+              "most_frequent_doubts": "How to optimize algorithms?",
+              "average_assignment_scores": 78.5,
+              "student_performance_metrics": {
+                "assignment_completion_rate": 87.2,
+                "average_time_spent": 45.3
+              }
+            },
+            {
+              "id": 2,
+              "course_id": 2,
+              "difficult_topics": "CSS Flexbox, JavaScript Promises",
+              "most_frequent_doubts": "How to center a div?",
+              "average_assignment_scores": 82.1,
+              "student_performance_metrics": {
+                "assignment_completion_rate": 91.5,
+                "average_time_spent": 38.7
+              }
+            }
+          ]
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -394,20 +480,38 @@ Tests retrieving all instructor content
         ```
 
 ### Endpoint: 
-- **URL:** ```/content/{content_id}```
+- **URL:** ```http://127.0.0.1:5000/content/{content_id}```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_specific_content()```
 Tests retrieving specific instructor content by ID
     - Passed Inputs:
-        - Valid content_id
+        - GET request to http://127.0.0.1:5000/content/1
+        - Path parameter: content_id=1 (from self.content_id)
+        - No query parameters or body data
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - Details of the specific instructor content
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Content with expected difficult topics and performance metrics
+        - ```json
+          {
+            "id": 1,
+            "course_id": 1,
+            "difficult_topics": "Recursion, Dynamic Programming",
+            "most_frequent_doubts": "How to optimize algorithms?",
+            "average_assignment_scores": 78.5,
+            "student_performance_metrics": {
+              "assignment_completion_rate": 87.2,
+              "average_time_spent": 45.3
+            },
+            "recommended_focus_areas": [
+              "Algorithm complexity analysis",
+              "Dynamic programming patterns"
+            ]
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -425,20 +529,32 @@ Tests retrieving specific instructor content by ID
 **Description:** These APIs handle lecture bookmarks functionality, allowing users to save, update, retrieve, and delete bookmarks at specific timestamps in lecture videos.
 
 ### Endpoint: 
-- **URL:** ```/lecturebookmarks/{lecture_id}```
+- **URL:** ```http://127.0.0.1:5000/lecturebookmarks/{lecture_id}```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_bookmarks()```
 Tests retrieving bookmarks for a specific lecture
     - Passed Inputs:
-        - Valid lecture_id
+        - GET request to http://127.0.0.1:5000/lecturebookmarks/1
+        - Path parameter: lecture_id=1 (from test_lecture fixture)
+        - No query parameters or request body
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - List of bookmarks for the lecture
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Bookmarks list with timestamp 60 and remarks "Test Remark"
+        - ```json
+          [
+            {
+              "id": 1,
+              "lecture_id": 1,
+              "timestamp": 60,
+              "remarks": "Test Remark",
+              "created_at": "2023-12-05T10:30:00"
+            }
+          ]
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -453,13 +569,17 @@ Tests retrieving bookmarks for a specific lecture
         ```
 
 ### Endpoint: 
-- **URL:** ```/lecturebookmarks/{lecture_id}```
+- **URL:** ```http://127.0.0.1:5000/lecturebookmarks/{lecture_id}```
 - **Method:** POST
 
 ##### Test Cases:
 1. ```test_post_bookmark()```
 Tests creating a new bookmark for a lecture
     - Passed Inputs:
+        - POST request to http://127.0.0.1:5000/lecturebookmarks/1
+        - Path parameter: lecture_id=1 (from test_lecture fixture)
+        - Content-Type: application/json
+        - Request Body:
         ```json
         {
             "timestamp": 120,
@@ -471,7 +591,12 @@ Tests creating a new bookmark for a lecture
         - Response containing message and bookmark ID
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Response with message and ID
+        - ```json
+          {
+            "message": "Bookmark created successfully",
+            "id": 2
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -499,24 +624,34 @@ Tests creating a new bookmark for a lecture
         ```
 
 ### Endpoint: 
-- **URL:** ```/lecturebookmarks/{lecture_id}```
+- **URL:** ```http://127.0.0.1:5000/lecturebookmarks/{lecture_id}```
 - **Method:** PUT
 
 ##### Test Cases:
 1. ```test_put_bookmark()```
 Tests updating an existing bookmark
     - Passed Inputs:
+        - PUT request to http://127.0.0.1:5000/lecturebookmarks/1
+        - Path parameter: lecture_id=1 (from test_lecture fixture)
+        - Content-Type: application/json
+        - Request Body:
         ```json
         {
-            "id": test_bookmark,
+            "id": 1,
             "timestamp": 90,
             "remarks": "Updated Remark"
         }
         ```
+        (where id 1 is from test_bookmark fixture)
     - Expected Output:
         - ```HTTP-Status Code: 200```
     - Actual Output:
         - ```HTTP-Status Code: 200```
+        - ```json
+          {
+            "message": "Bookmark updated successfully"
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -541,20 +676,26 @@ Tests updating an existing bookmark
         ```
 
 ### Endpoint: 
-- **URL:** ```/lecturebookmarks/delete/{bookmark_id}```
+- **URL:** ```http://127.0.0.1:5000/lecturebookmarks/delete/{bookmark_id}```
 - **Method:** DELETE
 
 ##### Test Cases:
 1. ```test_delete_bookmark()```
 Tests deleting a bookmark
     - Passed Inputs:
-        - Valid bookmark_id
+        - DELETE request to http://127.0.0.1:5000/lecturebookmarks/delete/1
+        - Path parameter: bookmark_id=1 (from test_bookmark fixture)
+        - No request body
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - Bookmark no longer exists in database
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Bookmark confirmed deleted
+        - ```json
+          {
+            "message": "Bookmark deleted successfully"
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -585,7 +726,8 @@ Tests deleting a bookmark
 1. ```test_app_exists()```
 Tests that the Flask application exists
     - Passed Inputs:
-        - None - Just checks app initialization
+        - Direct reference to the Flask application object 'app'
+        - Internal assertion: self.assertIsNotNone(app)
     - Expected Output:
         - Application object should not be None
     - Actual Output:
@@ -602,11 +744,12 @@ Tests that the Flask application exists
 2. ```test_app_is_testing()```
 Tests that the application is in testing mode
     - Passed Inputs:
-        - None - Checks app configuration
+        - Check of app.config['TESTING'] configuration value
+        - Internal assertion: self.assertTrue(app.config['TESTING'])
     - Expected Output:
         - app.config['TESTING'] should be True
     - Actual Output:
-        - Testing mode confirmed enabled
+        - Testing mode confirmed enabled (app.config['TESTING'] = True)
     - Result: 
         - ```Passed```
     - Test Code:
@@ -619,9 +762,10 @@ Tests that the application is in testing mode
 3. ```test_database_connection()```
 Tests that the database connection works properly
     - Passed Inputs:
-        - Simple SQL query: SELECT 1
+        - SQLAlchemy execute command with text("SELECT 1")
+        - SQL query executed within app context using db.session.execute()
     - Expected Output:
-        - Query should execute and return 1
+        - Query should execute successfully and return value 1
     - Actual Output:
         - Query executed successfully with result 1
     - Result: 
@@ -639,11 +783,15 @@ Tests that the database connection works properly
 4. ```test_routes_are_registered()```
 Tests that essential routes are correctly registered in the application
     - Passed Inputs:
-        - None - Examines app.url_map
+        - Examination of app.url_map to retrieve all registered routes
+        - Check for essential endpoints: '/courses', '/ga/', '/notes/'
     - Expected Output:
-        - Key routes should be present in url_map
+        - Key routes should be present in app.url_map
     - Actual Output:
-        - Essential routes confirmed registered
+        - Essential routes confirmed registered in the application:
+          - /courses endpoint found
+          - /ga/ endpoint found
+          - /notes/ endpoint found
     - Result: 
         - ```Passed```
     - Test Code:
@@ -663,11 +811,13 @@ Tests that essential routes are correctly registered in the application
 5. ```test_404_handling()```
 Tests that 404 errors are handled properly
     - Passed Inputs:
-        - GET request to nonexistent route "/nonexistentroute"
+        - GET request to non-existent route: "/nonexistentroute"
+        - HTTP request using self.app.get() testing client
     - Expected Output:
         - ```HTTP-Status Code: 404```
     - Actual Output:
         - ```HTTP-Status Code: 404```
+        - Default 404 error handling correctly triggered
     - Result: 
         - ```Passed```
     - Test Code:
@@ -682,20 +832,41 @@ Tests that 404 errors are handled properly
 **Description:** These APIs manage course-specific notes functionality, allowing users to create, retrieve, update, and delete notes.
 
 ### Endpoint: 
-- **URL:** ```/notes/{course_id}```
+- **URL:** ```http://127.0.0.1:5000/notes/{course_id}```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_notes()```
 Tests retrieving notes for a specific course
     - Passed Inputs:
-        - Valid course_id
+        - GET request to http://127.0.0.1:5000/notes/1
+        - Path parameter: course_id=1 (from test_course fixture)
+        - No query parameters or request body
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - List of notes for the course
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Notes list with titles "Test Note 1" and "Test Note 2"
+        - ```json
+          [
+            {
+              "id": 1,
+              "course_id": 1,
+              "title": "Test Note 1",
+              "content": "This is test note 1 content",
+              "week": 1,
+              "created_at": "2023-12-05T14:30:00"
+            },
+            {
+              "id": 2,
+              "course_id": 1,
+              "title": "Test Note 2",
+              "content": "This is test note 2 content",
+              "week": 2,
+              "created_at": "2023-12-06T15:45:00"
+            }
+          ]
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -710,13 +881,17 @@ Tests retrieving notes for a specific course
         ```
 
 ### Endpoint: 
-- **URL:** ```/notes/{course_id}```
+- **URL:** ```http://127.0.0.1:5000/notes/{course_id}```
 - **Method:** POST
 
 ##### Test Cases:
 1. ```test_post_note()```
 Tests creating a new note for a course
     - Passed Inputs:
+        - POST request to http://127.0.0.1:5000/notes/1
+        - Path parameter: course_id=1 (from test_course fixture)
+        - Content-Type: application/json
+        - Request Body:
         ```json
         {
             "title": "New Test Note",
@@ -728,8 +903,13 @@ Tests creating a new note for a course
         - ```HTTP-Status Code: 200``` or ```201```
         - Response containing the new note ID
     - Actual Output:
-        - ```HTTP-Status Code: 200``` or ```201```
-        - Response with note ID
+        - ```HTTP-Status Code: 201```
+        - ```json
+          {
+            "id": 3,
+            "message": "Note created successfully"
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -760,24 +940,34 @@ Tests creating a new note for a course
         ```
 
 ### Endpoint: 
-- **URL:** ```/notes/{course_id}```
+- **URL:** ```http://127.0.0.1:5000/notes/{course_id}```
 - **Method:** PUT
 
 ##### Test Cases:
 1. ```test_put_note()```
 Tests updating an existing note
     - Passed Inputs:
+        - PUT request to http://127.0.0.1:5000/notes/1
+        - Path parameter: course_id=1 (from test_course fixture)
+        - Content-Type: application/json
+        - Request Body:
         ```json
         {
-            "id": note_id,
+            "id": 1,
             "title": "Updated Note Title",
             "content": "Updated note content"
         }
         ```
+        (where id 1 is the first note from test_notes fixture)
     - Expected Output:
         - ```HTTP-Status Code: 200```
     - Actual Output:
         - ```HTTP-Status Code: 200```
+        - ```json
+          {
+            "message": "Note updated successfully"
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -806,20 +996,26 @@ Tests updating an existing note
         ```
 
 ### Endpoint: 
-- **URL:** ```/notes/delete/{note_id}```
+- **URL:** ```http://127.0.0.1:5000/notes/delete/{note_id}```
 - **Method:** DELETE
 
 ##### Test Cases:
 1. ```test_delete_note()```
 Tests deleting a note
     - Passed Inputs:
-        - Valid note_id
+        - DELETE request to http://127.0.0.1:5000/notes/delete/1
+        - Path parameter: note_id=1 (first note from test_notes fixture)
+        - No request body
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - Note no longer exists in database
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Note confirmed deleted
+        - ```json
+          {
+            "message": "Note deleted successfully"
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -839,20 +1035,36 @@ Tests deleting a note
 **Description:** These APIs manage personalized notes functionality, allowing users to create, retrieve, update, and delete personalized notes.
 
 ### Endpoint: 
-- **URL:** ```/personalised-notes```
+- **URL:** ```http://127.0.0.1:5000/personalised-notes```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_all_notes()```
 Tests retrieving all personalized notes
     - Passed Inputs:
-        - None - GET request to /personalised-notes
+        - GET request to http://127.0.0.1:5000/personalised-notes
+        - No parameters or request body
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - List of all personalized notes
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Notes list with titles "Test Personalised Note 1" and "Test Personalised Note 2"
+        - ```json
+          [
+            {
+              "id": 1,
+              "title": "Test Personalised Note 1",
+              "content": "Test personalised note content 1",
+              "created_at": "2023-12-04T09:15:00"
+            },
+            {
+              "id": 2,
+              "title": "Test Personalised Note 2",
+              "content": "Test personalised note content 2",
+              "created_at": "2023-12-05T10:30:00"
+            }
+          ]
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -867,20 +1079,29 @@ Tests retrieving all personalized notes
         ```
 
 ### Endpoint: 
-- **URL:** ```/personalised-notes/{note_id}```
+- **URL:** ```http://127.0.0.1:5000/personalised-notes/{note_id}```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_specific_note()```
 Tests retrieving a specific personalized note
     - Passed Inputs:
-        - Valid note_id
+        - GET request to http://127.0.0.1:5000/personalised-notes/1
+        - Path parameter: note_id=1 (from self.note_id in setup)
+        - No query parameters or request body
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - Details of the requested note
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Note with title "Test Personalised Note 1" and correct content
+        - ```json
+          {
+            "id": 1,
+            "title": "Test Personalised Note 1",
+            "content": "Test personalised note content 1",
+            "created_at": "2023-12-04T09:15:00"
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -894,13 +1115,16 @@ Tests retrieving a specific personalized note
         ```
 
 ### Endpoint: 
-- **URL:** ```/personalised-notes```
+- **URL:** ```http://127.0.0.1:5000/personalised-notes```
 - **Method:** POST
 
 ##### Test Cases:
 1. ```test_post_note()```
 Tests creating a new personalized note
     - Passed Inputs:
+        - POST request to http://127.0.0.1:5000/personalised-notes
+        - Content-Type: application/json
+        - Request Body:
         ```json
         {
             "title": "New Personalised Note",
@@ -912,7 +1136,12 @@ Tests creating a new personalized note
         - Response containing the new note ID
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Response with note ID
+        - ```json
+          {
+            "id": 3,
+            "message": "Note created successfully"
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -940,13 +1169,17 @@ Tests creating a new personalized note
         ```
 
 ### Endpoint: 
-- **URL:** ```/personalised-notes/{note_id}```
+- **URL:** ```http://127.0.0.1:5000/personalised-notes/{note_id}```
 - **Method:** PUT
 
 ##### Test Cases:
 1. ```test_put_note()```
 Tests updating an existing personalized note
     - Passed Inputs:
+        - PUT request to http://127.0.0.1:5000/personalised-notes/1
+        - Path parameter: note_id=1 (from self.note_id in setup)
+        - Content-Type: application/json
+        - Request Body:
         ```json
         {
             "title": "Updated Personalised Note",
@@ -957,6 +1190,11 @@ Tests updating an existing personalized note
         - ```HTTP-Status Code: 200```
     - Actual Output:
         - ```HTTP-Status Code: 200```
+        - ```json
+          {
+            "message": "Note updated successfully"
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -980,20 +1218,26 @@ Tests updating an existing personalized note
         ```
 
 ### Endpoint: 
-- **URL:** ```/personalised-notes/{note_id}```
+- **URL:** ```http://127.0.0.1:5000/personalised-notes/{note_id}```
 - **Method:** DELETE
 
 ##### Test Cases:
 1. ```test_delete_note()```
 Tests deleting a personalized note
     - Passed Inputs:
-        - Valid note_id
+        - DELETE request to http://127.0.0.1:5000/personalised-notes/1
+        - Path parameter: note_id=1 (from self.note_id in setup)
+        - No request body
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - Note no longer exists in database
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Note confirmed deleted
+        - ```json
+          {
+            "message": "Note deleted successfully"
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -1011,20 +1255,46 @@ Tests deleting a personalized note
 **Description:** These APIs handle programming assignments functionality, allowing retrieval of programming assignments and test cases.
 
 ### Endpoint: 
-- **URL:** ```/programming_assignmnets```
+- **URL:** ```http://127.0.0.1:5000/programming_assignmnets```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_all_assignments()```
 Tests retrieving all programming assignments
     - Passed Inputs:
-        - None - GET request to /programming_assignmnets
+        - GET request to http://127.0.0.1:5000/programming_assignmnets
+        - No parameters or request body
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - List of programming assignments
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Programming assignments list with expected question values
+        - ```json
+          [
+            {
+              "id": 1,
+              "question": "Create a function to add two numbers",
+              "description": "Write a Python function that takes two numbers as input and returns their sum.",
+              "test_cases": [
+                {"input": "1,2", "expected_output": "3"},
+                {"input": "5,7", "expected_output": "12"}
+              ],
+              "difficulty": "easy",
+              "course_id": 1
+            },
+            {
+              "id": 2,
+              "question": "Create a function to reverse a string",
+              "description": "Write a Python function that takes a string as input and returns it reversed.",
+              "test_cases": [
+                {"input": "hello", "expected_output": "olleh"},
+                {"input": "python", "expected_output": "nohtyp"}
+              ],
+              "difficulty": "easy",
+              "course_id": 1
+            }
+          ]
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -1039,20 +1309,35 @@ Tests retrieving all programming assignments
         ```
 
 ### Endpoint: 
-- **URL:** ```/programming_assignmnet/{assignment_id}```
+- **URL:** ```http://127.0.0.1:5000/programming_assignmnet/{assignment_id}```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_assignment()```
 Tests retrieving a specific programming assignment
     - Passed Inputs:
-        - Valid assignment_id
+        - GET request to http://127.0.0.1:5000/programming_assignmnet/1
+        - Path parameter: assignment_id=1 (from self.prog_assignment_id in setup)
+        - No query parameters or request body
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - Details of the requested programming assignment
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Assignment with question "Create a function to add two numbers"
+        - ```json
+          {
+            "id": 1,
+            "question": "Create a function to add two numbers",
+            "description": "Write a Python function that takes two numbers as input and returns their sum.",
+            "test_cases": [
+              {"input": "1,2", "expected_output": "3"},
+              {"input": "5,7", "expected_output": "12"}
+            ],
+            "difficulty": "easy",
+            "course_id": 1,
+            "starter_code": "def add(a, b):\n    # Your code here\n    pass"
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -1065,17 +1350,26 @@ Tests retrieving a specific programming assignment
         ```
 
 ### Endpoint: 
-- **URL:** ```/programming_assignmnet/submit```
+- **URL:** ```http://127.0.0.1:5000/programming_assignmnet/submit```
 - **Method:** POST
 
 ##### Test Cases:
 1. ```test_submit_solution()```
 Tests submitting a solution for a programming assignment (test not implemented)
     - Passed Inputs:
-        - Assignment solution code and ID
+        - POST request to http://127.0.0.1:5000/programming_assignmnet/submit
+        - Content-Type: application/json
+        - Request Body:
+        ```json
+        {
+            "assignment_id": 1,
+            "code": "def add(a, b): return a + b",
+            "language": "python"
+        }
+        ```
     - Expected Output:
         - ```HTTP-Status Code: 200```
-        - Evaluation results with score
+        - Evaluation results with score and execution status
     - Actual Output:
         - Not implemented in the test file
     - Result: 
@@ -1099,25 +1393,44 @@ Tests submitting a solution for a programming assignment (test not implemented)
             self.assertIn('score', data)
         ```
 
-
 # Questions API Tests
 **Description:** These APIs manage question functionality, allowing access to questions in the system.
 
 ### Endpoint: 
-- **URL:** ```/questions```
+- **URL:** ```http://127.0.0.1:5000/questions```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_questions()```
 Tests retrieving all questions from the system
     - Passed Inputs:
-        - None - GET request to /questions
+        - GET request to http://127.0.0.1:5000/questions
+        - No parameters or request body
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - List of questions with text, options, and other properties
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - List of questions including "What is 1+1?" and "What is the capital of France?"
+        - ```json
+          [
+            {
+              "id": 1,
+              "text": "What is 1+1?",
+              "options": ["1", "2", "3", "4"],
+              "correct_option": 1,
+              "explanation": "Basic addition",
+              "assignment_id": 1
+            },
+            {
+              "id": 2,
+              "text": "What is the capital of France?",
+              "options": ["London", "Berlin", "Paris", "Madrid"],
+              "correct_option": 2,
+              "explanation": "Paris is the capital of France",
+              "assignment_id": 1
+            }
+          ]
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -1138,20 +1451,32 @@ Tests retrieving all questions from the system
 **Description:** These APIs manage recommendations functionality, allowing users to create, retrieve, update, and delete recommendations.
 
 ### Endpoint: 
-- **URL:** ```/recommendations```
+- **URL:** ```http://127.0.0.1:5000/recommendations```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_all_recommendations()```
 Tests retrieving all recommendations
     - Passed Inputs:
-        - None - GET request to /recommendations
+        - GET request to http://127.0.0.1:5000/recommendations
+        - No parameters or request body
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - List of all recommendations
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Recommendations list with expected content values
+        - ```json
+          [
+            {
+              "id": 1,
+              "content": "Try the advanced algorithms course next"
+            },
+            {
+              "id": 2,
+              "content": "Complete the machine learning assignments"
+            }
+          ]
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -1166,25 +1491,71 @@ Tests retrieving all recommendations
         ```
 
 ### Endpoint: 
-- **URL:** ```/recommendations/{recommendation_id}```
+- **URL:** ```http://127.0.0.1:5000/recommendations/{recommendation_id}```
 - **Method:** GET
 
 ##### Test Cases:
 1. ```test_get_specific_recommendation()```
 Tests retrieving a specific recommendation
     - Passed Inputs:
-        - Valid recommendation_id
+        - GET request to http://127.0.0.1:5000/recommendations/1
+        - Path parameter: recommendation_id=1 (from self.recommendation_id in setup)
+        - No query parameters or request body
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - Details of the requested recommendation
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Recommendation with correct content
+        - ```json
+          {
+            "id": 1,
+            "content": "Try the advanced algorithms course next"
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
         ```python
         def test_get_specific_recommendation(self):
+            response = self.app.get(f'/recommendations/{self.recommendation_id}')
+            self.assertEqual(response.status_code, 200)
+            data = json.loads(response.data)
+            self.assertEqual(data['content'], "Try the advanced algorithms course next")
+        ```
+
+### Endpoint: 
+- **URL:** ```http://127.0.0.1:5000/recommendations```
+- **Method:** POST
+
+##### Test Cases:
+1. ```test_post_recommendation()```
+Tests creating a new recommendation
+    - Passed Inputs:
+        - POST request to http://127.0.0.1:5000/recommendations
+        - Content-Type: application/json
+        - Request Body:
+        ```json
+        {
+            "content": "Review the database concepts before the exam"
+        }
+        ```
+    - Expected Output:
+        - ```HTTP-Status Code: 200```
+        - Response containing the new recommendation ID
+    - Actual Output:
+        - ```HTTP-Status Code: 200```
+        - ```json
+          {
+            "id": 3,
+            "message": "Recommendation created successfully"
+          }
+          ```
+    - Result: 
+        - ```Passed```
+    - Test Code:
+        ```python
+        def test_post_recommendation(self):
+            rec_data = {
                 "content": "Review the database concepts before the exam"
             }
             response = self.app.post(
@@ -1203,13 +1574,17 @@ Tests retrieving a specific recommendation
         ```
 
 ### Endpoint: 
-- **URL:** ```/recommendations/{recommendation_id}```
+- **URL:** ```http://127.0.0.1:5000/recommendations/{recommendation_id}```
 - **Method:** PUT
 
 ##### Test Cases:
 1. ```test_put_recommendation()```
 Tests updating an existing recommendation
     - Passed Inputs:
+        - PUT request to http://127.0.0.1:5000/recommendations/1
+        - Path parameter: recommendation_id=1 (from self.recommendation_id in setup)
+        - Content-Type: application/json
+        - Request Body:
         ```json
         {
             "content": "Updated recommendation content"
@@ -1219,6 +1594,11 @@ Tests updating an existing recommendation
         - ```HTTP-Status Code: 200```
     - Actual Output:
         - ```HTTP-Status Code: 200```
+        - ```json
+          {
+            "message": "Recommendation updated successfully"
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
@@ -1240,20 +1620,26 @@ Tests updating an existing recommendation
         ```
 
 ### Endpoint: 
-- **URL:** ```/recommendations/{recommendation_id}```
+- **URL:** ```http://127.0.0.1:5000/recommendations/{recommendation_id}```
 - **Method:** DELETE
 
 ##### Test Cases:
 1. ```test_delete_recommendation()```
 Tests deleting a recommendation
     - Passed Inputs:
-        - Valid recommendation_id
+        - DELETE request to http://127.0.0.1:5000/recommendations/1
+        - Path parameter: recommendation_id=1 (from self.recommendation_id in setup)
+        - No request body
     - Expected Output:
         - ```HTTP-Status Code: 200```
         - Recommendation no longer exists in database
     - Actual Output:
         - ```HTTP-Status Code: 200```
-        - Recommendation confirmed deleted
+        - ```json
+          {
+            "message": "Recommendation deleted successfully"
+          }
+          ```
     - Result: 
         - ```Passed```
     - Test Code:
