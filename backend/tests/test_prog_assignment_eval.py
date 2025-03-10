@@ -24,7 +24,7 @@ class ProgAssignmentsTest(unittest.TestCase):
             db.session.commit()
             self.course_id = course.id
             
-            # Create test programming assignments - removed invalid attributes
+            # Create test programming assignments using only the valid field "question"
             prog_assignment1 = ProgrammingAssignment(
                 course_id=self.course_id,
                 question="Create a function to add two numbers",
@@ -45,8 +45,12 @@ class ProgAssignmentsTest(unittest.TestCase):
             db.drop_all()
 
     def test_get_all_assignments(self):
-        # Skip this test since we can't determine the correct API endpoint
-        self.skipTest("Cannot determine the correct API endpoint for ProgAssignments.get()")
+        response = self.app.get('/programming_assignmnets')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0]['question'], "Create a function to add two numbers")
+        self.assertEqual(data[1]['question'], "Create a function to reverse a string")
 
 
 class ProgAssignmentTest(unittest.TestCase):
@@ -65,7 +69,7 @@ class ProgAssignmentTest(unittest.TestCase):
             db.session.commit()
             self.course_id = course.id
             
-            # Create a test programming assignment - removed invalid 'code' attribute
+            # Create a test programming assignment using only the valid field "question"
             prog_assignment = ProgrammingAssignment(
                 course_id=self.course_id,
                 question="Create a function to add two numbers",
@@ -75,16 +79,16 @@ class ProgAssignmentTest(unittest.TestCase):
             db.session.commit()
             self.prog_assignment_id = prog_assignment.id
             
-            # Create test cases
+            # Create test cases using the valid key "progassignment_id"
             test_case1 = TestCases(
                 progassignment_id=self.prog_assignment_id,
-                input='[1, 2]',
-                output='3'
+                input="[1, 2]",
+                output="3"
             )
             test_case2 = TestCases(
                 progassignment_id=self.prog_assignment_id,
-                input='[-1, 5]',
-                output='4'
+                input="[-1, 5]",
+                output="4"
             )
             db.session.add_all([test_case1, test_case2])
             db.session.commit()
@@ -95,11 +99,10 @@ class ProgAssignmentTest(unittest.TestCase):
             db.drop_all()
 
     def test_get_assignment(self):
-        self.skipTest("Cannot determine the correct API endpoint for ProgAssignment.get()")
-
-    def test_post_solution_correct(self):
-        self.skipTest("Implementation depends on code execution which may not be available in test environment")
-
+        response = self.app.get(f'/programming_assignmnet/{self.prog_assignment_id}')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertEqual(data['question'], "Create a function to add two numbers")
 
 if __name__ == '__main__':
     unittest.main()

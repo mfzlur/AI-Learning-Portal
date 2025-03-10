@@ -63,7 +63,10 @@ class CoursesAPITest(unittest.TestCase):
         self.assertEqual(len(data['lectures']), 2)
 
     def test_get_nonexistent_course(self):
-        self.skipTest("API returns Response object instead of JSON for non-existent courses")
+        # Test requesting a nonexistent course - returns 404 status
+        nonexistent_id = 9999  # ID that doesn't exist
+        response = self.app.get(f'/course/{nonexistent_id}')
+        self.assertEqual(response.status_code, 404)
 
 
 if __name__ == '__main__':
