@@ -1350,48 +1350,102 @@ Tests retrieving a specific programming assignment
         ```
 
 ### Endpoint: 
-- **URL:** ```http://127.0.0.1:5000/programming_assignmnet/submit```
+- **URL:** `http://127.0.0.1:5000/programming_assignmnet/{assignment_id}`
 - **Method:** POST
 
 ##### Test Cases:
-1. ```test_submit_solution()```
-Tests submitting a solution for a programming assignment (test not implemented)
-    - Passed Inputs:
-        - POST request to http://127.0.0.1:5000/programming_assignmnet/submit
-        - Content-Type: application/json
-        - Request Body:
-        ```json
-        {
-            "assignment_id": 1,
-            "code": "def add(a, b): return a + b",
-            "language": "python"
-        }
-        ```
-    - Expected Output:
-        - ```HTTP-Status Code: 200```
-        - Evaluation results with score and execution status
-    - Actual Output:
-        - Not implemented in the test file
-    - Result: 
-        - ```Not Implemented```
-    - Test Code:
-        ```python
-        # This test is not implemented in the file, but would look something like:
-        def test_submit_solution(self):
-            solution_data = {
-                "assignment_id": self.prog_assignment_id,
-                "code": "def add(a, b): return a + b",
-                "language": "python"
-            }
-            response = self.app.post(
-                '/programming_assignmnet/submit',
-                data=json.dumps(solution_data),
-                content_type='application/json'
-            )
-            self.assertEqual(response.status_code, 200)
-            data = json.loads(response.data)
-            self.assertIn('score', data)
-        ```
+1. `test_post_assignment_evaluation()`
+Tests submitting a solution for a programming assignment.
+
+- **Passed Inputs:**
+    - POST request to `/programming_assignmnet/{assignment_id}`
+    - Path parameter: `assignment_id` (from `self.prog_assignment_id` in setup)
+    - Content-Type: `application/json`
+    - Request Body:
+    ```json
+    {
+        "code": "def solution(a, b): return a + b"
+    }
+    ```
+
+- **Expected Output:**
+    - `HTTP-Status Code: 200`
+    - Evaluation results with pass/fail status for each test case.
+
+- **Actual Output:**
+    - `HTTP-Status Code: 200`
+    - ```json
+      [true, true]
+      ```
+
+- **Result:** 
+    - `Passed`
+
+- **Test Code:**
+    ```python
+    def test_post_assignment_evaluation(self):
+        # Test with correct solution code
+        correct_solution = """
+        def solution(a, b):
+            return a + b
+        """
+        response = self.app.post(
+            f'/programming_assignmnet/{self.prog_assignment_id}',
+            json={"code": correct_solution},
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        results = json.loads(response.data)
+        self.assertEqual(len(results), 2)
+        self.assertTrue(all(results))  # All test cases should pass
+        
+        # Test with incorrect solution code
+        incorrect_solution = """
+        def solution(a, b):
+            return a - b
+        """
+        response = self.app.post(
+            f'/programming_assignmnet/{self.prog_assignment_id}',
+            json={"code": incorrect_solution},
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        results = json.loads(response.data)
+        self.assertEqual(len(results), 2)
+        self.assertFalse(all(results))  # Some test cases should fail
+        
+        # Test with code that raises an exception
+        error_solution = """
+        def solution(a, b):
+            return a / 0
+        """
+        response = self.app.post(
+            f'/programming_assignmnet/{self.prog_assignment_id}',
+            json={"code": error_solution},
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        results = json.loads(response.data)
+        self.assertEqual(len(results), 2)
+        # Results should contain error messages
+        self.assertTrue(isinstance(results[0], str))
+        
+        # Test with missing code
+        response = self.app.post(
+            f'/programming_assignmnet/{self.prog_assignment_id}',
+            json={},
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        
+        # Test with non-existent assignment ID
+        response = self.app.post(
+            '/programming_assignmnet/9999',
+            json={"code": correct_solution},
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 404)
+    ```
 
 # Questions API Tests
 **Description:** These APIs manage question functionality, allowing access to questions in the system.

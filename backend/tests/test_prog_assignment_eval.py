@@ -103,6 +103,69 @@ class ProgAssignmentTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
         self.assertEqual(data['question'], "Create a function to add two numbers")
+    
+    def test_post_assignment_evaluation(self):
+        # Test with correct solution code
+        correct_solution = """
+def solution(a, b):
+    return a + b
+"""
+        response = self.app.post(
+            f'/programming_assignmnet/{self.prog_assignment_id}',
+            json={"code": correct_solution},
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        results = json.loads(response.data)
+        self.assertEqual(len(results), 2)
+        self.assertTrue(all(results))  # All test cases should pass
+        
+        # Test with incorrect solution code
+        incorrect_solution = """
+def solution(a, b):
+    return a - b
+"""
+        response = self.app.post(
+            f'/programming_assignmnet/{self.prog_assignment_id}',
+            json={"code": incorrect_solution},
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        results = json.loads(response.data)
+        self.assertEqual(len(results), 2)
+        self.assertFalse(all(results))  # Some test cases should fail
+        
+        # Test with code that raises an exception
+        error_solution = """
+def solution(a, b):
+    return a / 0
+"""
+        response = self.app.post(
+            f'/programming_assignmnet/{self.prog_assignment_id}',
+            json={"code": error_solution},
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        results = json.loads(response.data)
+        self.assertEqual(len(results), 2)
+        # Results should contain error messages
+        self.assertTrue(isinstance(results[0], str))
+        
+        # Test with missing code
+        response = self.app.post(
+            f'/programming_assignmnet/{self.prog_assignment_id}',
+            json={},
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        
+        # Test with non-existent assignment ID
+        response = self.app.post(
+            '/programming_assignmnet/9999',
+            json={"code": correct_solution},
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 404)
 
 if __name__ == '__main__':
     unittest.main()
