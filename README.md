@@ -105,3 +105,13 @@ python app.py
 - test your apis
 
 make sure your server is running locally on port:5000
+
+
+## Running tests 
+- Change directory to backend
+- Run pytest
+
+```bash
+cd backend
+python -m pytest
+```
