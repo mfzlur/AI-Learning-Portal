@@ -15,9 +15,10 @@ def client():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
     with app.test_client() as client:
         with app.app_context():
-            db.create_all()
+            print(124)
             yield client
-            db.session.remove()
+            # db.session.remove()
+            print("hello")
             db.drop_all()
 
 def check_response(response, expected_status=None, expected_data=None, allow_empty=False):

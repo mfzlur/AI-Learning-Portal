@@ -17,7 +17,7 @@ const courses = ref([]);
 
 const fetchCourses = async () => {
   try {
-    const response = await axios.get('/enrolled_courses');
+    const response = await axios.get('/courses');
     courses.value = response.data;
   } catch (error) {
     console.error('Error fetching courses:', error);

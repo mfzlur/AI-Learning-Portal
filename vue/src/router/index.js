@@ -13,6 +13,9 @@ import DeveloperDashboardPage from '../views/DeveloperDashboardPage.vue'
 import SubjectSelectionPage from '../views/SubjectSelectionPage.vue'
 import { useAuthStore } from '../stores/auth'
 import AIAssistantView from '../views/AIAssistantView.vue'
+import CourseNavigation2 from '../components/CourseNavigation2.vue'
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -44,9 +47,9 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/course1',
+      path: '/course/:courseId',
       name: 'CourseNavigationPage',
-      component: CourseNavigationPage,
+      component: CourseNavigation2,
       meta: { requiresAuth: true }
     },
     {
